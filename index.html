@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>ATHLETA Taiwan 品牌社群營運系統</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap">
+<style>
+/* Layout: one long dark brand page, sticky section nav, every Chinese line paired with Japanese below it */
+:root{
+  --bg:#0f1115;--panel:#171a20;--line:#2a2f38;--ink:#eceae4;--soft:#cfcdc6;--muted:#9aa1ad;--ja:#b9b3a3;
+  --accent:#d8a93b;--on-accent:#14161b;--danger:#e0644f;
+  --c-product:#d8a93b;--c-people:#e0644f;--c-football:#4f9d6a;--c-culture:#5b8bd0;
+  --f-zh:"Noto Sans TC","PingFang TC","Heiti TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-ja:"Noto Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:110px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 var(--f-zh)}
+[lang="ja"]{font-family:var(--f-ja)}
+a{color:inherit}
+button,input,select,textarea{font:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+
+/* bilingual */
+.ja{display:block;color:var(--ja);font-size:.88em;margin-top:2px;line-height:1.6}
+body.l-zh .ja{display:none}
+body.l-ja .zh{display:none}
+body.l-ja .ja{color:inherit;font-size:1em;margin-top:0}
+
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;display:flex;align-items:center;gap:16px 24px;padding:12px 24px;background:rgba(15,17,21,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.brand{font-weight:900;letter-spacing:2px;text-decoration:none;white-space:nowrap}
+.brand span{color:var(--accent);font-weight:500}
+#nav{display:flex;gap:4px;overflow-x:auto;flex:1 1 300px;min-width:0;scrollbar-width:none}
+#nav a{padding:6px 12px;border-radius:999px;font-size:13px;color:var(--muted);text-decoration:none;white-space:nowrap}
+#nav a:hover,#nav a.on{background:var(--panel);color:var(--ink)}
+.lang{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex:none}
+.lang button{background:none;border:0;color:var(--muted);padding:5px 12px;font-size:13px;cursor:pointer}
+.lang button.on{background:var(--accent);color:var(--on-accent);font-weight:700}
+.how{margin:12px 0 16px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:13px;color:var(--muted)}
+.sync{font-size:12px;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:6px}
+.sync i{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.sync.ok i{background:var(--c-football)}.sync.bad i{background:var(--danger)}
+
+main{max-width:1080px;margin:0 auto;padding:0 24px}
+section{padding-block:72px 8px;border-top:1px solid var(--line)}
+section.hero{border:0;padding-top:72px}
+h1{font-size:clamp(28px,5vw,50px);line-height:1.3;margin:8px 0 12px;font-weight:900;text-wrap:balance}
+h1 .ja{font-size:.52em;font-weight:500;margin-top:10px;line-height:1.5}
+h2{font-size:28px;margin:0 0 12px;letter-spacing:1px;line-height:1.3}
+h2 small{display:inline-block;margin-right:12px;color:var(--accent);font-size:14px;letter-spacing:2px}
+h2 .sub{display:block;font-size:17px;font-weight:500;color:var(--soft);letter-spacing:0;margin-top:4px}
+h3{font-size:18px;margin:40px 0 10px;text-wrap:balance}
+.eyebrow{color:var(--accent);letter-spacing:3px;font-size:13px;margin:0}
+.stars{color:var(--accent);font-size:22px;letter-spacing:8px;margin:0 0 20px}
+.lead{font-size:18px;color:var(--soft);max-width:760px}
+.muted{color:var(--muted)}
+.muted .ja{color:var(--muted);opacity:.85}
+.big{font-size:26px;font-weight:700;margin:4px 0;line-height:1.35}
+.timeline-mini{display:flex;flex-wrap:wrap;gap:12px 0;list-style:none;padding:0;margin:0 0 32px;border-left:2px solid var(--accent)}
+.timeline-mini li{padding:0 28px 0 14px;color:var(--muted);font-size:14px}
+.timeline-mini b{display:block;color:var(--ink);font-size:18px}
+.home-grid,.grid4,.grid5,.cols{display:grid;gap:16px}
+.home-grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.grid4{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.grid5{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.cols{grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:32px}
+.cols>*{min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;min-width:0}
+.card h3,.card h4{margin:0 0 6px;font-size:16px}
+.card p{margin:6px 0;font-size:14px;color:#c4c2bb}
+.card .tag{display:inline-block;font-size:11px;letter-spacing:2px;font-weight:700;margin-bottom:6px}
+.ladder{color:var(--accent)!important;font-size:15px!important}
+.ladder .ja{color:var(--accent);opacity:.8}
+.rows>div{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
+.rows b{color:var(--accent)}
+.rows b .ja{color:var(--accent);opacity:.8}
+blockquote{margin:0 0 12px;padding:14px 18px;border-left:3px solid var(--accent);font-size:20px;background:var(--panel);border-radius:0 12px 12px 0}
+blockquote .ja{font-size:.8em}
+cite{display:block;font-size:13px;color:var(--muted);margin-top:6px;font-style:normal}
+.ratios{display:grid;gap:10px}
+.ratio{display:grid;grid-template-columns:130px 1fr;gap:12px;align-items:center;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.ratio .stack{display:flex;height:30px;border-radius:8px;overflow:hidden}
+.ratio .stack span{display:grid;place-items:center;color:#10131a;font-weight:700;font-size:12px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+.rules{padding-left:22px}.rules li{margin:10px 0;color:#d4d2cb}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.tabs button{background:var(--panel);border:1px solid var(--line);color:var(--muted);padding:8px 14px;border-radius:999px;cursor:pointer;font-size:14px}
+.tabs button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent);font-weight:700}
+.detail h3{margin:0 0 4px;font-size:22px}
+.detail dl{display:grid;grid-template-columns:110px 1fr;gap:12px 16px;margin:16px 0 0;font-size:14px}
+.detail dt{color:var(--accent);font-weight:700}
+.detail dt .ja{color:var(--accent);opacity:.8}
+.detail dd{margin:0;color:#d4d2cb;min-width:0}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.steps .card>b{color:var(--accent);font-size:12px;letter-spacing:2px}
+.form{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.form input,.form select,.form textarea{background:var(--panel);border:1px solid var(--line);color:var(--ink);padding:9px 12px;border-radius:10px;font-size:14px;min-width:0}
+.form input{flex:1 1 140px}.form select{flex:1 1 130px}
+.form .wide{flex:2 1 260px}
+.form textarea{flex:1 1 100%;min-height:64px}
+.form button{background:var(--accent);color:var(--on-accent);border:0;padding:9px 20px;border-radius:10px;font-weight:700;cursor:pointer;line-height:1.3}
+.form button .ja{color:var(--on-accent);font-size:.8em;margin:0}
+.form[aria-disabled="true"]{opacity:.5;pointer-events:none}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.chips button{background:transparent;border:1px solid var(--line);color:var(--muted);padding:4px 12px;border-radius:999px;cursor:pointer;font-size:13px;font-variant-numeric:tabular-nums}
+.chips button.on{border-color:var(--accent);color:var(--accent)}
+.table-wrap{overflow-x:auto;min-width:0}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:top}
+th{color:var(--muted);font-weight:500;font-size:12px;letter-spacing:1px}
+th .ja{font-size:11px;letter-spacing:0}
+td{font-variant-numeric:tabular-nums}
+td.wrap{white-space:normal;min-width:180px}
+.empty{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px;font-size:14px}
+.del{background:none;border:1px solid transparent;color:var(--muted);cursor:pointer;border-radius:8px;padding:2px 8px;font-size:13px;white-space:nowrap}
+.del.arm{border-color:var(--danger);color:var(--danger)}
+td select{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:4px 8px}
+.pill{padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700;color:#10131a}
+.checks{display:grid;gap:8px}
+.checks label{display:flex;gap:12px;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-radius:12px;cursor:pointer;font-size:14px}
+.checks label.done{opacity:.55}
+.checks input{accent-color:var(--accent);margin-top:6px;flex:none}
+.checks small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.checks small .ja{color:var(--muted)}
+.bar{height:8px;background:var(--panel);border-radius:8px;overflow:hidden;margin-top:14px}
+.bar div{height:100%;background:var(--accent);width:0;transition:width .3s}
+.mhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px;margin:4px 0 4px}
+.mhead h3{margin:0;font-size:22px}
+.draft{display:inline-block;font-size:12px;padding:2px 10px;border-radius:999px;border:1px solid var(--accent);color:var(--accent)}
+.draft .ja{display:inline;color:var(--accent);font-size:1em;margin:0 0 0 6px}
+body.l-ja .draft .ja{margin:0}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:16px;margin-top:16px}
+.mgrid>*{min-width:0}
+.group h4{margin:0 0 10px;font-size:15px;color:var(--accent)}
+.group h4 .ja{color:var(--accent);opacity:.8}
+.group+.group{margin-top:22px}
+.tasks{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.tasks li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:14px;padding:8px 0;border-bottom:1px solid var(--line)}
+.tasks li:last-child{border-bottom:0}
+.tasks .box{width:16px;height:16px;border:1.5px solid var(--muted);border-radius:4px;margin-top:4px;display:grid;place-items:center;font-size:11px;color:var(--on-accent)}
+.tasks li.done .box{background:var(--accent);border-color:var(--accent)}
+.tasks li.done .txt{opacity:.55;text-decoration:line-through}
+.tasks .meta{display:block;font-size:12px;color:var(--muted)}
+.notice{margin:12px 0 0;padding:10px 14px;border-radius:10px;border:1px solid var(--line);font-size:13px;color:var(--muted)}
+.notice:empty{display:none}
+footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+@media(max-width:640px){
+  .nav{padding:10px 16px;gap:8px 12px}
+  #nav{order:3;flex-basis:100%}
+  main{padding:0 16px}
+  .ratio{grid-template-columns:1fr;gap:4px}
+  .rows>div,.detail dl{grid-template-columns:1fr;gap:2px}
+  .detail dd{margin-bottom:10px}
+  h2{font-size:24px}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="#home">ATHLETA <span>Taiwan</span></a>
+  <nav id="nav" aria-label="Sections"></nav>
+  <span id="sync" class="sync ok"><i></i><span id="sync-text"></span></span>
+  <div class="lang" role="group" aria-label="Language">
+    <button data-lang="both" id="lang-both">中日</button><button data-lang="zh" id="lang-zh">中文</button><button data-lang="ja" id="lang-ja">日本語</button>
+  </div>
+</header>
+
+<main>
+  <section id="home" class="hero">
+    <p class="eyebrow">BRAND × CONTENT × FOOTBALL × CULTURE</p>
+    <h1><span class="zh" lang="zh-Hant">在 2027 年十週年前，<br>重新讓台灣足球圈認識 ATHLETA。</span><span class="ja" lang="ja">2027年の10周年までに、<br>台湾サッカー界にもう一度ATHLETAを知ってもらう。</span></h1>
+    <p class="stars">★ ★ ★</p>
+    <ol id="timeline" class="timeline-mini"></ol>
+    <div class="home-grid">
+      <div class="card"><h3 id="h-now"></h3><p id="now-phase" class="big"></p><p id="now-focus" class="muted"></p></div>
+      <div class="card"><h3 id="h-count"></h3><p id="countdown" class="big"></p><p class="muted">2027/05/01 ATHLETA Taiwan 10th Anniversary</p></div>
+      <div class="card"><h3 id="h-month"></h3><p id="month-count" class="big"></p><p id="month-theme" class="muted"></p><div class="bar"><div id="month-bar"></div></div></div>
+      <div class="card"><h3 id="h-ladder"></h3><p id="ladder" class="ladder"></p></div>
+    </div>
+  </section>
+
+  <section id="brand">
+    <h2 id="h2-brand"></h2>
+    <p class="lead" id="brand-lead"></p>
+    <div class="cols">
+      <div><h3 id="h-situation"></h3><div id="situation" class="rows"></div></div>
+      <div>
+        <h3 id="h-spirit"></h3>
+        <blockquote id="quote"></blockquote>
+        <p class="muted" id="spirit-note"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="system">
+    <h2 id="h2-system"></h2>
+    <h3 id="h-pillars"></h3>
+    <p class="muted" id="pillars-note"></p>
+    <div id="pillars" class="grid4"></div>
+    <h3 id="h-ratios"></h3>
+    <p class="muted" id="ratios-note"></p>
+    <div id="ratios" class="ratios"></div>
+    <div class="legend" id="ratio-legend"></div>
+    <h3 id="h-platforms"></h3>
+    <div id="platforms" class="grid4"></div>
+    <h3 id="h-shoots"></h3>
+    <div id="shoots" class="grid5"></div>
+    <p class="muted" id="shoots-note"></p>
+    <h3 id="h-rules"></h3>
+    <ol id="rules" class="rules"></ol>
+  </section>
+
+  <section id="calendar">
+    <h2 id="h2-calendar"></h2>
+    <div id="phase-tabs" class="tabs"></div>
+    <div id="phase-detail" class="card detail"></div>
+    <h3 id="h-monthly"></h3>
+    <div id="monthly" class="steps"></div>
+    <p class="muted" id="meeting-note"></p>
+  </section>
+
+  <section id="plan">
+    <h2 id="h2-plan"></h2>
+    <p class="lead" id="plan-lead"></p>
+    <div id="month-tabs" class="tabs"></div>
+    <div id="month-detail"></div>
+  </section>
+
+  <section id="bank">
+    <h2 id="h2-bank"></h2>
+    <p class="lead" id="bank-lead"></p>
+    <p class="how" data-how></p>
+    <div id="bank-filters" class="chips"></div>
+    <div id="bank-list" class="table-wrap"></div>
+  </section>
+
+  <section id="people">
+    <h2 id="h2-people"></h2>
+    <p class="lead" id="people-lead"></p>
+    <div id="roles" class="grid4"></div>
+    <h3 id="h-plist"></h3>
+    <p class="how" data-how></p>
+    <div id="people-list" class="table-wrap"></div>
+  </section>
+
+
+  <p id="notice" class="notice" role="status"></p>
+</main>
+<footer id="footer"></footer>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  // ---------- content: every string is [中文, 日本語] ----------
+  var T = {
+    now: ['現在進行到', '現在のフェーズ'],
+    count: ['距離十週年', '10周年まで'],
+    ladderH: ['認知階梯', '認知のステップ'],
+    ladder: ['看見 → 認識 → 喜歡 → 認同 → 參與 → 到店／購買', '目にする → 知る → 好きになる → 共感する → 参加する → 来店・購入'],
+    brand: ['品牌方向', 'ブランドの方向性'],
+    brandLead: ['我們要建立的，不只是社群帳號：每一次拍攝、貼文與足球圈合作，都要留下可累積的品牌資產。', '私たちが作るのはSNSアカウントだけではありません。撮影、投稿、サッカー界とのコラボ、その一つひとつを積み上がるブランド資産として残していきます。'],
+    situation: ['現在最需要解決的事', '今いちばん解決すべきこと'],
+    spirit: ['品牌精神', 'ブランドの精神'],
+    quote: ['「不同想法的人，也可以因為穿這個品牌，讓大家結合在一起。」', '「考え方の違う人同士でも、このブランドを着ることでひとつになれる。」'],
+    quoteBy: ['— 光桑', '— 光さん'],
+    spiritNote: ['目標不是讓人因為「這件衣服好看」認識 ATHLETA，而是因為喜歡這個品牌、足球文化、人物與氛圍而留下來。', '目指すのは「この服がかっこいい」からATHLETAを知ってもらうことではなく、ブランド、サッカー文化、人、雰囲気を好きになって、ファンでいてもらうことです。'],
+    system: ['內容系統', 'コンテンツの仕組み'],
+    pillars: ['四大內容支柱', '4つのコンテンツの柱'],
+    pillarsNote: ['所有企劃先分類，再決定拍法與平台。PEOPLE 是主幹，FOOTBALL 是場景，PRODUCT 是細節，CULTURE 是底色。', 'すべての企画はまず分類し、それから撮り方と媒体を決めます。PEOPLEが幹、FOOTBALLが舞台、PRODUCTがディテール、CULTUREが土台の色です。'],
+    ratios: ['各階段建議比例', 'フェーズごとの推奨比率'],
+    ratiosNote: ['建議起點，開會討論後調整。', 'たたき台です。会議で話し合って調整します。'],
+    platforms: ['四個平台，各自負責一件事', '4つの媒体、それぞれの役割'],
+    notPut: ['不放：', '載せないもの：'],
+    shoots: ['五種 Content Shoot', '5種類のコンテンツ撮影'],
+    shootsNote: ['每次拍攝至少收齊六種資產：A-Roll、B-Roll、Photo、Vertical、Story、Text，再進入 Content Bank。', '毎回の撮影で最低6種類の素材（A-Roll、B-Roll、Photo、Vertical、Story、Text）を揃え、Content Bankに入れます。'],
+    rules: ['不要變成商品廣告的六條守則', '商品広告にならないための6つのルール'],
+    calendar: ['年度與月度節奏', '年間・月間のリズム'],
+    monthly: ['每月固定運作', '毎月の定例サイクル'],
+    output: ['產出：', 'アウトプット：'],
+    meeting: ['每月 Content Meeting 只回答五件事：這個月品牌最重要的是什麼？四大支柱各講什麼？需要哪些 Content Shoot？素材如何分配到四平台？上個月什麼有效、什麼要調整？', '毎月のContent Meetingで答えるのは次の5つだけです。今月ブランドにとって一番大事なことは？4つの柱でそれぞれ何を伝える？どんな撮影が必要？素材を4つの媒体にどう振り分ける？先月は何が効いて、何を直す？'],
+    dt: [['要完成', 'やること'], ['要累積', '積み上げるもの'], ['拍攝重點', '撮影の重点'], ['平台配合', '媒体の動き'], ['完成標準', '達成の基準']],
+    bank: ['素材庫', '素材ライブラリ'],
+    bankLead: ['所有素材進入同一個庫，用同一套標記，十週年時就能依人物與主題查找。', 'すべての素材を同じライブラリに入れ、同じタグで管理します。10周年のときに人物やテーマごとに探せます。'],
+    all: ['全部', 'すべて'],
+    bankEmpty: ['還沒有素材。拍攝完成後，在上方新增並標記，十週年時就能查到每個人與每個主題。', 'まだ素材がありません。撮影が終わったら上で追加してタグを付けておくと、10周年のときに人物やテーマごとに探せます。'],
+    bankCols: [['素材', '素材'], ['支柱', '柱'], ['人物', '人物'], ['格式', '形式'], ['方向', '向き'], ['狀態', '状態'], ['日期', '日付']],
+    people: ['人物與故事', '人物とストーリー'],
+    peopleLead: ['門市的定位：銷售空間 × 品牌據點 × 內容產地 × 足球交流空間。', '店舗の位置づけ：販売の場 × ブランドの拠点 × コンテンツが生まれる場所 × サッカー交流の場。'],
+    plist: ['ATHLETA PEOPLE 人物清單', 'ATHLETA PEOPLE 人物リスト'],
+    peopleEmpty: ['還沒有人物。先從光桑、翔太與門市夥伴開始，再往球員、教練、創作者延伸。', 'まだ人物がいません。光さん、翔太さん、店舗スタッフから始めて、選手・コーチ・クリエイターへ広げていきます。'],
+    peopleCols: [['姓名', '名前'], ['身分', '立場'], ['進度', '進捗']],
+    footer: ['ATHLETA Taiwan 品牌社群營運系統 · 內容依年度架構文件與網站架構版整理', 'ATHLETA Taiwan ブランドSNS運営システム · 年間計画資料とサイト構成案をもとに作成'],
+    updated: ['資料更新 {d}', 'データ更新 {d}'],
+    how: ['要新增或修改資料，請傳給小封，由小封統一更新到網站。', 'データの追加・修正は小封に送ってください。小封がまとめてサイトに反映します。'],
+    days: ['{n} 天', 'あと{n}日'],
+    plan: ['每月進度', '月間の進捗'],
+    planLead: ['每個月要完成的事與要拍的內容。打勾代表已完成，由小封統一更新。標示「草案」的月份還在討論中。', '毎月やることと撮影する内容です。チェックは完了済みの印で、小封がまとめて更新します。「草案」の月はまだ検討中です。'],
+    thisMonth: ['本月進度', '今月の進捗'],
+    tasksDone: ['完成 {n} / {t}', '完了 {n} / {t}'],
+    draftTag: ['草案・待討論', '草案・検討中'],
+    shootList: ['本月拍攝清單', '今月の撮影リスト'],
+    shootEmpty: ['拍攝內容待討論，確定後會更新在這裡。', '撮影内容は検討中です。決まり次第ここに反映します。'],
+    shootCols: [['類型', '種類'], ['拍攝內容', '撮影内容'], ['人物', '人物'], ['日期', '日付'], ['狀態', '状態']],
+    owner: ['負責：', '担当：'],
+    due: ['期限：', '期限：'],
+    noMonth: ['這個月還沒有內容。', 'この月の内容はまだありません。'],
+    arrived: ['十週年已到', '10周年を迎えました']
+  };
+
+  var OPTS = {
+    format: [['照片', '写真'], ['影片', '動画'], ['文字', 'テキスト']],
+    orient: [['直式', '縦'], ['橫式', '横']],
+    status: [['未發布', '未投稿'], ['已發布', '投稿済み']],
+    stage: [['待邀請', '依頼前'], ['已邀請', '依頼済み'], ['已拍攝', '撮影済み'], ['已發布', '投稿済み']],
+    shoot: [['待拍攝', '撮影前'], ['已拍攝', '撮影済み'], ['已發布', '投稿済み']]
+  };
+
+  var TIMELINE = [['1935', ['巴西誕生', 'ブラジルで誕生']], ['日本', ['延續與發展', '継承と発展']], ['2017', ['台灣啟程', '台湾でスタート']], ['2027', ['台灣十週年', '台湾10周年']]];
+
+  var PILLARS = [
+    { key: 'PRODUCT', zh: ['商品', '商品'], color: 'var(--c-product)',
+      q: ['ATHLETA 有什麼、為什麼值得選', 'ATHLETAに何があり、なぜ選ぶ価値があるのか'],
+      range: ['鞋款、服飾、新品、科技、功能、設計、穿搭、細節、球場使用', 'シューズ、アパレル、新商品、テクノロジー、機能、デザイン、コーディネート、ディテール、ピッチでの使用'],
+      link: ['一律放進人物或球場情境，不單獨成列', '必ず人物やピッチのシーンの中で見せ、商品だけでは出さない'] },
+    { key: 'PEOPLE', zh: ['人物', '人物'], color: 'var(--c-people)',
+      q: ['這個人是誰', 'この人は誰か'],
+      range: ['球員、教練、足球工作者、光桑、翔太、門市人員、品牌愛用者', '選手、コーチ、サッカー関係者、光さん、翔太さん、店舗スタッフ、ブランドの愛用者'],
+      link: ['人物自然穿著 ATHLETA；經歷連到 FOOTBALL，觀點連到 CULTURE', '人物は自然にATHLETAを着用。経歴はFOOTBALLに、考え方はCULTUREにつながる'] },
+    { key: 'FOOTBALL', zh: ['足球', 'サッカー'], color: 'var(--c-football)',
+      q: ['ATHLETA 在不在台灣足球圈', 'ATHLETAは台湾サッカー界にいるか'],
+      range: ['比賽、訓練、球隊、基層、足球活動、台日交流', '試合、練習、チーム、育成・草の根、サッカーイベント、日台交流'],
+      link: ['場上的人是 PEOPLE，場上的裝備是 PRODUCT', 'ピッチ上の人はPEOPLE、ピッチ上の用具はPRODUCT'] },
+    { key: 'CULTURE', zh: ['文化', 'カルチャー'], color: 'var(--c-culture)',
+      q: ['ATHLETA 是什麼樣的品牌', 'ATHLETAはどんなブランドか'],
+      range: ['巴西歷史、日本 ATHLETA、台灣啟程、門市日常、幕後、歷史照片、十週年故事', 'ブラジルの歴史、日本のATHLETA、台湾でのスタート、店舗の日常、舞台裏、昔の写真、10周年のストーリー'],
+      link: ['為其他三條提供脈絡與語氣', '他の3つの柱に文脈とトーンを与える'] }
+  ];
+
+  var RATIOS = [
+    ['2026.10–11', [30, 25, 20, 25]],
+    ['2026.12–2027.01', [25, 30, 20, 25]],
+    ['2027.02–03', [20, 30, 35, 15]],
+    ['2027.04', [15, 30, 15, 40]],
+    ['2027.05.01', [10, 35, 20, 35]]
+  ];
+
+  var PLATFORMS = [
+    { n: 'Instagram', role: ['品牌門面', 'ブランドの顔'],
+      put: ['視覺、Reels、人物、商品、足球、Campaign；參考 BAI VS3 Taiwan 的呈現邏輯，但建立自己的風格', 'ビジュアル、リール、人物、商品、サッカー、キャンペーン。BAI VS3 Taiwanの見せ方を参考にしつつ、独自のスタイルを作る'],
+      no: ['長文資訊、門市行政訊息', '長文の情報、店舗の事務連絡'] },
+    { n: 'Facebook', role: ['資訊＋足球社群', '情報＋サッカーコミュニティ'],
+      put: ['活動、賽事、品牌與人物故事、完整照片、門市資訊、較完整文章', 'イベント、試合、ブランドと人物のストーリー、写真アルバム、店舗情報、しっかりした記事'],
+      no: ['單純轉貼短影音', 'ショート動画の単純な転載'] },
+    { n: 'Threads', role: ['品牌人格＋即時互動', 'ブランドの人柄＋リアルタイムの交流'],
+      put: ['足球話題、門市日常、比賽討論、翔太／光桑觀點、幕後、台日足球', 'サッカーの話題、店舗の日常、試合の話、翔太さん・光さんの視点、舞台裏、日台サッカー'],
+      no: ['廣告口吻；要像「人在說話」', '広告っぽい口調。「人が話している」感じにする'] },
+    { n: 'LINE', role: ['關係維護＋轉換', '関係づくり＋購入への導線'],
+      put: ['新品、活動、門市資訊、會員、詢問、預購、導購', '新商品、イベント、店舗情報、会員、問い合わせ、予約販売、購入案内'],
+      no: ['面向陌生人的觸及內容', 'まだブランドを知らない人向けのリーチ用投稿'] }
+  ];
+
+  var SHOOTS = [
+    { k: 'A', n: 'PRODUCT', get: ['商品照、短影音、細節、功能、穿搭、使用情境', '商品写真、ショート動画、ディテール、機能、コーディネート、使用シーン'], role: ['跟新品與銷售；盡量併入 B、C 順便取得', '新商品・販売に合わせる。できるだけB・Cの撮影のついでに撮る'] },
+    { k: 'B', n: 'PEOPLE', get: ['人物照、影像、簡單訪談、人物故事', '人物写真、映像、簡単なインタビュー、人物ストーリー'], role: ['主幹：每月至少一組，由內往外', '幹となる撮影。毎月最低1組、身内から外へ広げる'] },
+    { k: 'C', n: 'FOOTBALL', get: ['訓練、比賽、球員、球隊、活動、實際使用', '練習、試合、選手、チーム、イベント、実際の使用'], role: ['跟賽程；2–3 月放大', '試合日程に合わせる。2〜3月に拡大'] },
+    { k: 'D', n: 'STORE', get: ['翔太、光桑、工作人員、新品、門市日常、幕後', '翔太さん、光さん、スタッフ、新商品、店舗の日常、舞台裏'], role: ['基礎班底：頻率最高、成本最低', 'ベースの撮影。頻度が最も高く、コストが最も低い'] },
+    { k: 'E', n: 'CAMPAIGN', get: ['台日合作、球隊合作、大型人物、十週年', '日台コラボ、チームとのコラボ、大物ゲスト、10周年'], role: ['少而大：全年 2–3 次，十週年為頂點', '少なく大きく。年2〜3回、10周年が頂点'] }
+  ];
+
+  var RULES = [
+    ['商品占比有上限：任何一個月 PRODUCT 不超過總內容約四分之一，後期逐階段降低。', '商品の割合には上限があります。どの月もPRODUCTは全体の約4分の1までとし、後半はフェーズごとに下げていきます。'],
+    ['商品不單獨出現：每則商品內容都要有人或場景（誰在穿、在哪裡用）。', '商品だけで出さない。商品の投稿には必ず人かシーン（誰が着ているか、どこで使うか）を入れます。'],
+    ['先寫人或情境，再決定商品：標題和第一句是人和事，不是品名和價格。', 'まず人やシーンを書き、それから商品を決める。タイトルと最初の一文は人と出来事にし、商品名や価格にはしません。'],
+    ['價格、規格、購買資訊交給 LINE 與留言，不放在人物內容的主體。', '価格・スペック・購入情報はLINEとコメント欄に任せ、人物投稿の本文には入れません。'],
+    ['每週檢查一次：連續三則都是商品，下一則必須是 PEOPLE、FOOTBALL 或 CULTURE。', '週に1回チェック。商品の投稿が3本続いたら、次は必ずPEOPLE、FOOTBALL、CULTUREのどれかにします。'],
+    ['Threads 不用廣告口吻，保持「人在說話」。', 'Threadsでは広告っぽい口調を使わず、「人が話している」感じを保ちます。']
+  ];
+
+  var PHASES = [
+    { id: 'p1', label: '2026.10–11', name: ['重新建立', '立て直し'], start: '2026-10-01', end: '2026-11-30',
+      core: ['讓 ATHLETA Taiwan 開始穩定說話', 'ATHLETA Taiwanが安定して発信し始める'],
+      f: [
+        ['社群定位、視覺方向、內容分類、品牌語氣、固定拍攝流程', 'SNSの位置づけ、ビジュアルの方向性、コンテンツ分類、ブランドのトーン、撮影の定型フロー'],
+        ['四條內容線各一批內容；第一批人物（光桑、翔太、門市人員）', '4つの柱それぞれで最初の投稿群。最初の人物（光さん、翔太さん、店舗スタッフ）'],
+        ['D STORE、B PEOPLE（內部）、A PRODUCT；C 試拍 1 次', 'D STORE、B PEOPLE（社内）、A PRODUCT。Cは試し撮り1回'],
+        ['IG 建立視覺；FB 活動與門市資訊歸位；Threads 開始用人的聲音說話；LINE 承接新品與門市訊息', 'IGはビジュアルを確立。FBはイベントと店舗情報を整理。Threadsは人の声で話し始める。LINEは新商品と店舗のお知らせを担う'],
+        ['四條線都出現過；有一份可重複使用的拍攝流程與語氣說明；不做大型十週年內容', '4つの柱がすべて登場している。繰り返し使える撮影フローとトーンのガイドがある。大型の10周年コンテンツはまだやらない']
+      ] },
+    { id: 'p2', label: '2026.12–2027.01', name: ['建立固定內容系列', '定番シリーズを作る'], start: '2026-12-01', end: '2027-01-31',
+      core: ['讓觀眾開始知道 ATHLETA Taiwan 會出現什麼', 'ATHLETA Taiwanで何が見られるのか、フォロワーに分かってもらう'],
+      f: [
+        ['商品、人物、門市、足球、品牌文化五個可長期持續的系列', '商品・人物・店舗・サッカー・ブランドカルチャーの、長く続けられる5つのシリーズ'],
+        ['人物、照片、影片、故事；開始整理十週年資產清單', '人物、写真、動画、ストーリー。10周年用の素材リストの整理を始める'],
+        ['B 系列化、D；A 與 C 作為輔助', 'Bをシリーズ化、D。AとCは補助'],
+        ['IG 系列上線、固定頻率；FB 人物故事與完整相簿；Threads 每週固定觀點；LINE 系列預告、會員', 'IGはシリーズ開始、頻度を固定。FBは人物ストーリーとアルバム。Threadsは毎週決まった視点の投稿。LINEはシリーズ予告と会員向け'],
+        ['每個系列至少 3 集且頻率固定（建議）', '各シリーズ最低3回、頻度が固定されている（推奨）']
+      ] },
+    { id: 'p3', label: '2027.02–03', name: ['走出自己的社群', '自分たちの外へ出る'], start: '2027-02-01', end: '2027-03-31',
+      core: ['讓 ATHLETA 進入台灣足球圈', 'ATHLETAを台湾サッカー界に入り込ませる'],
+      f: [
+        ['增加球員、教練、球隊、足球創作者、足球活動、台日交流、外部合作', '選手、コーチ、チーム、サッカー系クリエイター、サッカーイベント、日台交流、外部とのコラボを増やす'],
+        ['外部人物與合作紀錄；足球圈的人出現在 ATHLETA，ATHLETA 也出現在足球圈', '外部の人物とコラボの記録。サッカー界の人がATHLETAに登場し、ATHLETAもサッカー界に登場する'],
+        ['C FOOTBALL、B（外部人物）；E 台日或球隊合作 1 次', 'C FOOTBALL、B（外部の人物）。E 日台またはチームとのコラボ1回'],
+        ['IG 球員教練球隊 Reels；FB 賽事活動紀錄；Threads 比賽討論與台日足球；LINE 活動報名、預購', 'IGは選手・コーチ・チームのリール。FBは試合・イベントの記録。Threadsは試合の話題と日台サッカー。LINEはイベント申込と予約販売'],
+        ['外部人物與球隊比例明顯增加；至少一組合作完成', '外部の人物とチームの割合が明らかに増えている。コラボが最低1件完了している']
+      ] },
+    { id: 'p4', label: '2027.04', name: ['十週年預熱', '10周年に向けた助走'], start: '2027-04-01', end: '2027-04-30',
+      core: ['開始回答「ATHLETA Taiwan 這十年發生了什麼？」', '「ATHLETA Taiwanのこの10年に何があったのか」に答え始める'],
+      f: [
+        ['整理過去人物、歷史照片、品牌故事、門市、球員、球隊、重要活動、台日關係、過去合作', 'これまでの人物、昔の写真、ブランドストーリー、店舗、選手、チーム、主なイベント、日台の関係、過去のコラボを整理する'],
+        ['回溯人物訪談、歷史照片翻拍、倒數內容', '振り返りインタビュー、昔の写真の複写、カウントダウン投稿'],
+        ['B（回溯人物）、歷史照片翻拍；D、C 輔助', 'B（振り返りの人物）、昔の写真の複写。D・Cは補助'],
+        ['IG 歷史照片與人物回溯；FB 十年故事長文；Threads 倒數與回憶；LINE 十週年活動預告', 'IGは昔の写真と人物の振り返り。FBは10年のストーリーの長文。Threadsはカウントダウンと思い出。LINEは10周年イベントの予告'],
+        ['社群開始感受到十週年要到了', '10周年が近いことがフォロワーに伝わっている']
+      ] },
+    { id: 'p5', label: '2027.05.01', name: ['ATHLETA Taiwan 十週年', 'ATHLETA Taiwan 10周年'], start: '2027-05-01', end: '2027-05-31',
+      core: ['把半年累積的人物、故事、照片、影片、足球圈關係與品牌文化集中呈現', '半年かけて積み上げた人物・ストーリー・写真・動画・サッカー界との関係・ブランドカルチャーを一気に見せる'],
+      f: [
+        ['十週年 Campaign 與活動', '10周年キャンペーンとイベント'],
+        ['—', '—'],
+        ['E CAMPAIGN', 'E CAMPAIGN'],
+        ['IG 主視覺、Campaign；FB 完整紀錄；Threads 即時互動；LINE 活動、預購、導購', 'IGはキービジュアルとキャンペーン。FBは全記録。Threadsはリアルタイムの交流。LINEはイベント、予約販売、購入案内'],
+        ['讓大家看到：不只存在十年，而是在台灣足球圈累積了十年的關係', 'ただ10年続いただけでなく、台湾サッカー界で10年分の関係を築いてきたことを見せる']
+      ] }
+  ];
+
+  var SITUATION = [
+    [['社群', 'SNS'], ['需要更穩定、清楚的品牌輸出 → 社群優先，建立固定內容節奏與品牌辨識', 'より安定した明確なブランド発信が必要 → SNSを優先し、決まった投稿リズムとブランドの認知を作る']],
+    [['商品', '商品'], ['鞋款策略會因銷售狀況調整 → 不讓帳號只剩商品曝光，增加人物、足球與文化內容', 'シューズの戦略は販売状況に応じて変わる → アカウントを商品露出だけにせず、人物・サッカー・カルチャーの投稿を増やす']],
+    [['門市', '店舗'], ['平日客流較少，有可運用時間 → 把門市變成內容生產與品牌交流據點', '平日は来客が少なく、使える時間がある → 店舗をコンテンツ制作とブランド交流の拠点にする']],
+    [['人員', 'スタッフ'], ['新店長重新定義工讀生角色 → 吸引真正喜歡品牌、理解文化的人加入', '新店長がアルバイトの役割を見直す → ブランドが本当に好きで、カルチャーを理解している人に加わってもらう']],
+    [['資源', 'リソース'], ['台灣與日本端都有足球人脈 → 透過人物、球隊、活動與台日連結擴大觸及', '台湾・日本の両方にサッカーの人脈がある → 人物・チーム・イベント・日台のつながりでリーチを広げる']]
+  ];
+
+  var ROLES = [
+    { n: ['光桑', '光さん'], t: ['台灣區負責人／店長', '台湾エリア責任者・店長'], d: ['品牌方向、商品與銷售、門市營運、最終執行確認', 'ブランドの方向性、商品と販売、店舗運営、実行の最終確認'] },
+    { n: ['翔太', '翔太さん'], t: ['品牌×門市人物', 'ブランド×店舗の顔'], d: ['門市、商品、日本文化、足球活動與日常內容的重要人物', '店舗、商品、日本文化、サッカーイベント、日常の投稿に欠かせない人物'] },
+    { n: ['封＋彭', '封・彭'], t: ['內容與足球連結', 'コンテンツとサッカー界とのつながり'], d: ['社群規劃、影像製作、台灣足球人脈、人物合作、台日資源串聯', 'SNSの企画、映像制作、台湾サッカー界の人脈、人物とのコラボ、日台のリソースをつなぐ'] },
+    { n: ['Content Staff', 'Content Staff'], t: ['內容優先的門市夥伴', 'コンテンツ優先の店舗スタッフ'], d: ['內容生產優先，兼具門市基本支援，但不被定義成一般工讀生', 'コンテンツ制作を優先しつつ店舗の基本業務も手伝う。一般的なアルバイトとは位置づけが違う'] }
+  ];
+
+  var MONTHLY = [
+    ['01 PLAN', ['確認新品、活動、人物、足球事件、品牌需求，分配四大內容支柱', '新商品・イベント・人物・サッカーの出来事・ブランドの要望を確認し、4つの柱に振り分ける'], ['月度 Content Plan', '月間コンテンツプラン']],
+    ['02 SHOOT', ['安排商品／人物／足球／門市／品牌企劃拍攝', '商品・人物・サッカー・店舗・ブランド企画の撮影を手配する'], ['照片＋影片＋文字素材', '写真＋動画＋テキスト素材']],
+    ['03 BANK', ['整理、命名、分類與標記可用素材', '使える素材を整理・命名・分類・タグ付けする'], ['Content Bank', 'Content Bank']],
+    ['04 PUBLISH', ['依 IG／FB／Threads／LINE 特性分發', 'IG・FB・Threads・LINEの特性に合わせて配信する'], ['跨平台內容', '各媒体向けの投稿']],
+    ['05 REVIEW', ['看觸及、觀看、分享、收藏、留言、追蹤、LINE、門市反應', 'リーチ、再生数、シェア、保存、コメント、フォロー、LINE、店舗での反応を見る'], ['Monthly Review', 'Monthly Review']],
+    ['06 ADJUST', ['保留有效內容、停止低效做法、調整下月方向', '効果のあったものは続け、効果の低いやり方はやめ、翌月の方向を調整する'], ['Next Month Action', 'Next Month Action']]
+  ];
+
+
+
+
+
+  var NAV = [['home', 'HOME'], ['brand', 'BRAND'], ['system', 'CONTENT SYSTEM'], ['calendar', 'CALENDAR'], ['plan', 'MONTHLY PLAN'], ['bank', 'CONTENT BANK'], ['people', 'PEOPLE']];
+
+
+  // ---------- helpers ----------
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function B(p) { return '<span class="zh" lang="zh-Hant">' + esc(p[0]) + '</span><span class="ja" lang="ja">' + esc(p[1]) + '</span>'; }
+  function fill(p, vars) { return [p[0], p[1]].map(function (s) { return s.replace(/\{(\w+)\}/g, function (_, k) { return vars[k]; }); }); }
+  function pillarColor(key) { var p = PILLARS.filter(function (x) { return x.key === key; })[0]; return p ? p.color : 'var(--muted)'; }
+  function optLabel(kind, zh) { var o = OPTS[kind].filter(function (x) { return x[0] === zh; })[0]; return o ? B(o) : esc(zh); }
+  function lsGet(k) { try { return localStorage.getItem('athleta.' + k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem('athleta.' + k, v); } catch (e) { /* storage unavailable */ } }
+  function set(id, html) { $(id).innerHTML = html; }
+  // user-entered text: show the stored translation pair when there is one
+  function TX(row, f) { var t = row.tr && row.tr[f]; return t && t.zh && t.ja ? B([t.zh, t.ja]) : esc(row[f]); }
+
+  // ---------- language ----------
+  var lang = lsGet('lang') || 'both';
+  function textFor(p) { return lang === 'zh' ? p[0] : lang === 'ja' ? p[1] : p[0] + '／' + p[1]; }
+  function applyLang() {
+    document.body.classList.remove('l-zh', 'l-ja', 'l-both');
+    document.body.classList.add('l-' + lang);
+    document.documentElement.lang = lang === 'ja' ? 'ja' : 'zh-Hant';
+    [].forEach.call(document.querySelectorAll('.lang button'), function (b) { b.classList.toggle('on', b.getAttribute('data-lang') === lang); });
+    [].forEach.call(document.querySelectorAll('[data-ph]'), function (el) { el.placeholder = textFor(el.getAttribute('data-ph').split('|')); });
+    [].forEach.call(document.querySelectorAll('select[data-opt]'), function (el) {
+      var v = el.value;
+      el.innerHTML = OPTS[el.getAttribute('data-opt')].map(function (o) { return '<option value="' + esc(o[0]) + '">' + esc(textFor(o)) + '</option>'; }).join('');
+      if (v) el.value = v;
+    });
+    renderAll();
+  }
+  document.querySelector('.lang').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    lang = b.getAttribute('data-lang'); lsSet('lang', lang); applyLang();
+  });
+
+  // ---------- static sections ----------
+  function h2(n, en, p) { return '<small>' + n + '</small>' + en + '<span class="sub">' + B(p) + '</span>'; }
+  set('nav', NAV.map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + '</a>'; }).join(''));
+  set('timeline', TIMELINE.map(function (t) { return '<li><b>' + t[0] + '</b>' + B(t[1]) + '</li>'; }).join(''));
+  set('h-now', B(T.now)); set('h-count', B(T.count)); set('h-ladder', B(T.ladderH)); set('ladder', B(T.ladder));
+
+  var today = new Date();
+  var cur = PHASES.filter(function (p) { return today >= new Date(p.start + 'T00:00:00') && today <= new Date(p.end + 'T23:59:59'); })[0]
+    || (today < new Date(PHASES[0].start + 'T00:00:00') ? PHASES[0] : PHASES[PHASES.length - 1]);
+  set('now-phase', '<span class="zh" lang="zh-Hant">' + esc(cur.label + '｜' + cur.name[0]) + '</span><span class="ja" lang="ja">' + esc(cur.label + '｜' + cur.name[1]) + '</span>');
+  set('now-focus', B(cur.core));
+  var days = Math.ceil((new Date('2027-05-01T00:00:00') - today) / 86400000);
+  set('countdown', days > 0 ? B(fill(T.days, { n: days })) : B(T.arrived));
+
+  set('h2-brand', h2('01', 'BRAND', T.brand)); set('brand-lead', B(T.brandLead));
+  set('h-situation', B(T.situation)); set('h-spirit', B(T.spirit));
+  set('situation', SITUATION.map(function (r) { return '<div><b>' + B(r[0]) + '</b><span>' + B(r[1]) + '</span></div>'; }).join(''));
+  set('quote', B(T.quote) + '<cite>' + B(T.quoteBy) + '</cite>');
+  set('spirit-note', B(T.spiritNote));
+
+  set('h2-system', h2('02', 'CONTENT SYSTEM', T.system));
+  set('h-pillars', B(T.pillars)); set('pillars-note', B(T.pillarsNote));
+  set('pillars', PILLARS.map(function (p) {
+    return '<div class="card"><span class="tag" style="color:' + p.color + '">' + p.key + '｜' + B(p.zh) + '</span><h4>' + B(p.q) + '</h4><p>' + B(p.range) + '</p><p class="muted">' + B(p.link) + '</p></div>';
+  }).join(''));
+  set('h-ratios', B(T.ratios)); set('ratios-note', B(T.ratiosNote));
+  set('ratios', RATIOS.map(function (r) {
+    return '<div class="ratio"><span>' + r[0] + '</span><div class="stack">' + r[1].map(function (v, i) {
+      return '<span style="width:' + v + '%;background:' + PILLARS[i].color + '">' + v + '</span>';
+    }).join('') + '</div></div>';
+  }).join(''));
+  set('ratio-legend', PILLARS.map(function (p) { return '<span><i style="background:' + p.color + '"></i>' + p.key + '</span>'; }).join(''));
+  set('h-platforms', B(T.platforms));
+  set('platforms', PLATFORMS.map(function (p) {
+    return '<div class="card"><h4>' + p.n + '</h4><p><b>' + B(p.role) + '</b></p><p>' + B(p.put) + '</p><p class="muted">' + B([T.notPut[0] + p.no[0], T.notPut[1] + p.no[1]]) + '</p></div>';
+  }).join(''));
+  set('h-shoots', B(T.shoots)); set('shoots-note', B(T.shootsNote));
+  set('shoots', SHOOTS.map(function (s) {
+    return '<div class="card"><span class="tag" style="color:var(--accent)">SHOOT ' + s.k + '</span><h4>' + s.n + '</h4><p>' + B(s.get) + '</p><p class="muted">' + B(s.role) + '</p></div>';
+  }).join(''));
+  set('h-rules', B(T.rules));
+  set('rules', RULES.map(function (r) { return '<li>' + B(r) + '</li>'; }).join(''));
+
+  set('h2-calendar', h2('03', 'CONTENT CALENDAR', T.calendar));
+  var activePhase = cur.id;
+  function renderPhase() {
+    set('phase-tabs', PHASES.map(function (p) {
+      return '<button data-id="' + p.id + '" class="' + (p.id === activePhase ? 'on' : '') + '">' + p.label + '</button>';
+    }).join(''));
+    var p = PHASES.filter(function (x) { return x.id === activePhase; })[0];
+    set('phase-detail', '<h3>' + B(p.name) + '</h3><p class="muted">' + B(p.core) + '</p><dl>' +
+      T.dt.map(function (d, i) { return '<dt>' + B(d) + '</dt><dd>' + B(p.f[i]) + '</dd>'; }).join('') + '</dl>');
+  }
+  $('phase-tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    activePhase = b.getAttribute('data-id'); renderPhase();
+  });
+  renderPhase();
+  set('h-monthly', B(T.monthly)); set('meeting-note', B(T.meeting));
+  set('monthly', MONTHLY.map(function (m) {
+    return '<div class="card"><b>' + m[0] + '</b><p>' + B(m[1]) + '</p><p class="muted">' + B([T.output[0] + m[2][0], T.output[1] + m[2][1]]) + '</p></div>';
+  }).join(''));
+
+  set('h2-plan', h2('04', 'MONTHLY PLAN', T.plan)); set('plan-lead', B(T.planLead)); set('h-month', B(T.thisMonth));
+  set('h2-bank', h2('05', 'CONTENT BANK', T.bank)); set('bank-lead', B(T.bankLead));
+
+  set('h2-people', h2('06', 'PEOPLE / STORIES', T.people)); set('people-lead', B(T.peopleLead)); set('h-plist', B(T.plist));
+  set('roles', ROLES.map(function (r) { return '<div class="card"><h4>' + B(r.n) + '</h4><p><b>' + B(r.t) + '</b></p><p class="muted">' + B(r.d) + '</p></div>'; }).join(''));
+
+  set('footer', B(T.footer));
+
+  // ---------- team data (data.js, updated by 小封) ----------
+  var D = window.ATHLETA_DATA || {};
+  var bank = (D.bank || []).slice(), people = (D.people || []).slice();
+  var bankFilter = 'ALL';
+  // a field is either plain text or a [中文, 日本語] pair
+  function V(v) { return Array.isArray(v) ? B(v) : esc(v); }
+
+  set('sync-text', B(fill(T.updated, { d: esc(D.updated || '—') })));
+  [].forEach.call(document.querySelectorAll('[data-how]'), function (el) { el.innerHTML = B(T.how); });
+
+  function renderBank() {
+    var keys = ['ALL'].concat(PILLARS.map(function (p) { return p.key; }));
+    set('bank-filters', keys.map(function (k) {
+      var n = k === 'ALL' ? bank.length : bank.filter(function (b) { return b.pillar === k; }).length;
+      return '<button data-k="' + k + '" class="' + (k === bankFilter ? 'on' : '') + '">' + (k === 'ALL' ? esc(textFor(T.all)) : k) + ' ' + n + '</button>';
+    }).join(''));
+    var rows = bank.filter(function (b) { return bankFilter === 'ALL' || b.pillar === bankFilter; });
+    if (!rows.length) { set('bank-list', '<div class="empty">' + B(T.bankEmpty) + '</div>'); return; }
+    set('bank-list', '<table><thead><tr>' + T.bankCols.map(function (c) { return '<th>' + B(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      rows.map(function (b) {
+        return '<tr><td class="wrap">' + V(b.title) + '</td><td><span class="pill" style="background:' + pillarColor(b.pillar) + '">' + esc(b.pillar) + '</span></td><td>' + esc(b.person) + '</td><td>' + optLabel('format', b.format) + '</td><td>' + optLabel('orient', b.orient) + '</td><td>' + optLabel('status', b.status) + '</td><td>' + esc(b.date) + '</td></tr>';
+      }).join('') + '</tbody></table>');
+  }
+  $('bank-filters').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; bankFilter = b.getAttribute('data-k'); renderBank(); });
+
+  function renderPeople() {
+    if (!people.length) { set('people-list', '<div class="empty">' + B(T.peopleEmpty) + '</div>'); return; }
+    set('people-list', '<table><thead><tr>' + T.peopleCols.map(function (c) { return '<th>' + B(c) + '</th>'; }).join('') + '</tr></thead><tbody>' + people.map(function (p) {
+      return '<tr><td>' + esc(p.name) + '</td><td class="wrap">' + V(p.role) + '</td><td>' + optLabel('stage', p.stage) + '</td></tr>';
+    }).join('') + '</tbody></table>');
+  }
+
+  // ---------- monthly plan ----------
+  var months = (D.months || []).slice().sort(function (a, b) { return a.month < b.month ? -1 : 1; });
+  var nowKey = today.getFullYear() + '-' + ('0' + (today.getMonth() + 1)).slice(-2);
+  var activeMonth = months.some(function (m) { return m.month === nowKey; }) ? nowKey : (months[0] && months[0].month);
+  function monthLabel(m) { var p = m.split('-'); return p[0] + '.' + p[1]; }
+  function allTasks(m) { return (m.groups || []).reduce(function (a, g) { return a.concat(g.tasks || []); }, []); }
+  function countDone(m) { var t = allTasks(m); return { n: t.filter(function (x) { return x.done; }).length, t: t.length }; }
+
+  function renderHomeMonth() {
+    var m = months.filter(function (x) { return x.month === nowKey; })[0];
+    if (!m) { set('month-count', '—'); set('month-theme', B(T.noMonth)); $('month-bar').style.width = '0'; return; }
+    var c = countDone(m);
+    set('month-count', B(fill(T.tasksDone, { n: c.n, t: c.t })));
+    set('month-theme', '<a href="#plan">' + V(m.theme) + '</a>');
+    $('month-bar').style.width = (c.t ? c.n / c.t * 100 : 0) + '%';
+  }
+
+  function renderMonths() {
+    if (!months.length) { set('month-tabs', ''); set('month-detail', '<div class="empty">' + B(T.noMonth) + '</div>'); return; }
+    set('month-tabs', months.map(function (m) {
+      return '<button data-m="' + esc(m.month) + '" class="' + (m.month === activeMonth ? 'on' : '') + '">' + monthLabel(m.month) + (m.draft ? ' ·' : '') + '</button>';
+    }).join(''));
+    var m = months.filter(function (x) { return x.month === activeMonth; })[0];
+    var c = countDone(m);
+    var html = '<div class="card"><div class="mhead"><h3>' + monthLabel(m.month) + '</h3>' + (m.draft ? '<span class="draft">' + B(T.draftTag) + '</span>' : '') + '</div>' +
+      '<p class="lead" style="margin:4px 0">' + V(m.theme) + '</p>' +
+      '<p class="muted" style="margin:0">' + B(fill(T.tasksDone, { n: c.n, t: c.t })) + '</p><div class="bar"><div style="width:' + (c.t ? c.n / c.t * 100 : 0) + '%"></div></div>' +
+      '<div class="mgrid"><div>' + (m.groups || []).map(function (g) {
+        return '<div class="group"><h4>' + V(g.name) + '</h4><ul class="tasks">' + (g.tasks || []).map(function (t) {
+          var meta = [];
+          if (t.owner) meta.push(B([T.owner[0] + t.owner, T.owner[1] + t.owner]));
+          if (t.due) meta.push(B([T.due[0] + t.due, T.due[1] + t.due]));
+          return '<li class="' + (t.done ? 'done' : '') + '"><span class="box" aria-hidden="true">' + (t.done ? '✓' : '') + '</span><span><span class="txt">' + V(t.t) + '</span>' + (meta.length ? '<span class="meta">' + meta.join('') + '</span>' : '') + '</span></li>';
+        }).join('') + '</ul></div>';
+      }).join('') + '</div><div><div class="group"><h4>' + B(T.shootList) + '</h4>' + renderShoots(m.shoots || []) + '</div></div></div></div>';
+    set('month-detail', html);
+  }
+  function renderShoots(list) {
+    if (!list.length) return '<div class="empty">' + B(T.shootEmpty) + '</div>';
+    return '<div class="table-wrap"><table><thead><tr>' + T.shootCols.map(function (c) { return '<th>' + B(c) + '</th>'; }).join('') + '</tr></thead><tbody>' + list.map(function (x) {
+      return '<tr><td>' + (x.pillar ? '<span class="pill" style="background:' + pillarColor(x.pillar) + '">' + esc(x.pillar) + '</span>' : '') + '</td><td class="wrap">' + V(x.title) + '</td><td>' + esc(x.person) + '</td><td>' + esc(x.date) + '</td><td>' + optLabel('shoot', x.status) + '</td></tr>';
+    }).join('') + '</tbody></table></div>';
+  }
+  $('month-tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    activeMonth = b.getAttribute('data-m'); renderMonths();
+  });
+
+  function renderAll() { renderHomeMonth(); renderMonths(); renderBank(); renderPeople(); }
+  applyLang();
+
+  // ---------- scroll spy ----------
+  var links = [].slice.call(document.querySelectorAll('#nav a'));
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { if (en.isIntersecting) links.forEach(function (a) { a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id); }); });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    NAV.forEach(function (n) { var s = $(n[0]); if (s) io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>
