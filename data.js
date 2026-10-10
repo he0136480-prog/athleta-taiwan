@@ -1,7 +1,7 @@
 // ATHLETA Taiwan 團隊資料（由小封更新）
 // 文字欄位可以是 '中文'，或 ['中文', '日本語'] 讓網站顯示雙語。
 window.ATHLETA_DATA = {
-  updated: '2026-10-10',
+  updated: '2026-10-11',
 
   // 每月進度：
   // { month: 'YYYY-MM', draft: 草案就填 true, theme: 本月主題,
@@ -12,6 +12,9 @@ window.ATHLETA_DATA = {
   //   usage: [ { date: 'MM/DD', task: 工作名稱, content: 服務的內容企劃, pillar: PRODUCT|PEOPLE|FOOTBALL|CULTURE,
   //              type: Photography|Reel|Social Post|Content Staff|Article|Campaign|Other, qty: 數量,
   //              points: 只有 Campaign／Other／特別報價時才填, status: PLANNED|SCHEDULED|IN PROGRESS|COMPLETED|CANCELLED, note: 備註 } ]
+  //   shootLog: [ { date: 'MM/DD', title: 拍攝內容, kind: EVENT(活動／賽事・C)|PRODUCT(商品・A)|PEOPLE(人物・B)|STORE(門市日常・D)|CAMPAIGN(品牌企劃・E),
+  //                 pillar: PRODUCT|PEOPLE|FOOTBALL|CULTURE, format: PHOTO(平面)|VIDEO(影像)|BOTH, hours: 時數, location, people, output: 產出, note,
+  //                 points: { type, qty, status } ← 有填就自動列入 Point Usage } ]
   //   單價：Photography 5/小時、Reel 10/支、Social Post 2/則、Content Staff 1/小時、Article 5 起
   months: [
     {
@@ -39,7 +42,15 @@ window.ATHLETA_DATA = {
       ],
       shoots: [],
       points: { purchased: 50 },
-      usage: []
+      usage: [],
+      shootLog: [
+        { date: '10/11', title: ['日本沖繩 ATHLETA 巴西學院來台比賽', '沖縄 ATHLETAブラジルアカデミー 来台試合'],
+          kind: 'EVENT', pillar: 'FOOTBALL', format: 'PHOTO', hours: 2,
+          location: '淡水文中五球場', people: 'ATHLETA 巴西學院（沖繩） vs 樂活台灣',
+          output: ['照片約 50 張', '写真 約50枚'],
+          note: ['可延伸作為品牌歷史內容素材（巴西 → 日本 → 台灣）', 'ブランドの歴史コンテンツ（ブラジル → 日本 → 台湾）の素材としても使える'],
+          points: { type: 'Photography', qty: 2, status: 'COMPLETED' } }
+      ]
     },
     {
       month: '2026-11', draft: true,

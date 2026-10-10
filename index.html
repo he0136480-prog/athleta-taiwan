@@ -383,6 +383,13 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
     pcPlanCols: [['方案', 'プラン'], ['定位', '位置づけ'], ['每月取得 Points', '毎月のPoints'], ['最多可延展', '繰越の上限'], ['每月合作費', '月額の協力費'], ['每點約當', '1ポイントあたり']],
     pcUsage: ['POINT USAGE｜本月點數使用明細', 'POINT USAGE｜今月のポイント使用明細'],
     pcCols: [['日期', '日付'], ['工作名稱', '作業名'], ['支柱', '柱'], ['工作類型', '作業の種類'], ['數量', '数量'], ['單價', '単価'], ['Points', 'Points'], ['約當金額', '金額換算'], ['狀態', '状態'], ['備註', '備考']],
+    logTitle: ['SHOOT LOG｜本月拍攝紀錄', 'SHOOT LOG｜今月の撮影記録'],
+    logNote: ['實際拍了什麼都記在這裡；有填點數的拍攝會自動列入下方 Point Usage。', '実際に撮影したものをここに記録します。ポイントを入力した撮影は、下のPoint Usageに自動で反映されます。'],
+    logEmpty: ['本月還沒有拍攝紀錄。', '今月の撮影記録はまだありません。'],
+    logCols: [['日期', '日付'], ['拍攝內容', '撮影内容'], ['拍攝類型', '撮影の種類'], ['支柱', '柱'], ['形式', '形式'], ['時數', '時間'], ['Points', 'Points'], ['備註', '備考']],
+    logWhere: ['地點：', '場所：'],
+    logWho: ['人物／球隊：', '人物・チーム：'],
+    logOut: ['產出：', '成果物：'],
     pcNoUsage: ['本月尚未登記點數使用明細。', '今月のポイント使用明細はまだ登録されていません。'],
     pcServe: ['服務內容：', '対象コンテンツ：'],
     pcByContent: ['依內容企劃彙總：每個內容花了多少 Points', 'コンテンツ企画別の集計：各コンテンツに使ったPoints'],
@@ -731,7 +738,7 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
           if (t.due) meta.push(B([T.due[0] + t.due, T.due[1] + t.due]));
           return '<li class="' + (t.done ? 'done' : '') + '"><span class="box" aria-hidden="true">' + (t.done ? '✓' : '') + '</span><span><span class="txt">' + V(t.t) + '</span>' + (meta.length ? '<span class="meta">' + meta.join('') + '</span>' : '') + '</span></li>';
         }).join('') + '</ul></div>';
-      }).join('') + '</div><div><div class="group"><h4>' + B(T.shootList) + '</h4>' + renderShoots(m.shoots || []) + '</div></div></div>' + renderPoints(m) + '</div>';
+      }).join('') + '</div><div><div class="group"><h4>' + B(T.shootList) + '</h4>' + renderShoots(m.shoots || []) + '</div></div></div>' + renderLog(m) + renderPoints(m) + '</div>';
     set('month-detail', html);
   }
   // ---------- planned vs actual mix ----------
@@ -804,13 +811,21 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
   function uRate(u) { return typeof u.rate === 'number' ? u.rate : RATE[u.type]; }
   // explicit `points` wins (Campaign / Other / Article above the base rate), else qty × rate
   function uPts(u) { if (typeof u.points === 'number') return u.points; var r = uRate(u); return r == null ? 0 : r * (Number(u.qty) || 0); }
-  function hasPoints(m) { return !!(m.points || (m.usage && m.usage.length)); }
+  var KIND = { 'EVENT': ['C', ['活動／賽事', 'イベント・試合']], 'PRODUCT': ['A', ['商品', '商品']], 'PEOPLE': ['B', ['人物', '人物']], 'STORE': ['D', ['門市日常', '店舗の日常']], 'CAMPAIGN': ['E', ['品牌企劃', 'ブランド企画']] };
+  var FORMAT = { 'PHOTO': ['平面', '写真'], 'VIDEO': ['影像', '映像'], 'BOTH': ['平面＋影像', '写真＋映像'] };
+  // shoot-log entries that carry points become Point Usage rows, so nothing is entered twice
+  function allUsage(m) {
+    return (m.usage || []).concat((m.shootLog || []).filter(function (x) { return x.points; }).map(function (x) {
+      return { date: x.date, task: x.title, content: x.content || x.title, pillar: x.pillar, type: x.points.type, qty: x.points.qty, points: x.points.points, status: x.points.status, note: x.note };
+    }));
+  }
+  function hasPoints(m) { return !!(m.points || allUsage(m).length); }
 
   var PTS = (function () {
     var res = {}, carry = 0;
     months.forEach(function (m) {
       var P = (m.points && Number(m.points.purchased)) || 0, C = carry, A = P + C, used = 0, planned = 0;
-      (m.usage || []).forEach(function (u) {
+      allUsage(m).forEach(function (u) {
         var p = uPts(u);
         if (u.status === 'COMPLETED') used += p; else if (u.status !== 'CANCELLED') planned += p;
       });
@@ -848,7 +863,7 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
     var notes = '<p class="muted" style="font-size:13px;margin:10px 0 0">' + B(fill(T.pcCarryNote, { cap: r.cap, c: r.C })) + '</p>' +
       (r.over ? '<p class="notice" style="border-color:var(--danger);color:var(--danger)">' + B(fill(T.pcOver, { n: r.over })) + '</p>' : '');
 
-    var list = (m.usage || []).slice().sort(function (a, b) { return String(a.date) < String(b.date) ? -1 : 1; });
+    var list = allUsage(m).sort(function (a, b) { return String(a.date) < String(b.date) ? -1 : 1; });
     var usage = '<h4 style="margin:20px 0 8px;font-size:15px;color:var(--accent)">' + B(T.pcUsage) + '</h4>' + (!list.length ? '<div class="empty">' + B(T.pcNoUsage) + '</div>' :
       '<div class="table-wrap"><table><thead><tr>' + T.pcCols.map(function (c) { return '<th>' + B(c) + '</th>'; }).join('') + '</tr></thead><tbody>' + list.map(function (u) {
         var unit = UNIT[u.type] || ['', ''], rate = uRate(u);
@@ -872,6 +887,23 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
 
     var money = pf.per == null ? '' : '<p style="font-size:13px;margin:10px 0 0">' + B(fill(T.pcMoney, { u: nt(r.used * pf.per), p: nt(r.planned * pf.per), r: nt(Math.max(0, r.unalloc) * pf.per), e: nt(r.expiring * pf.per) })) + '</p><p class="muted" style="font-size:12px;margin:2px 0 0">' + B(T.pcMoneyNote) + '</p>';
     return head + planTiles + tiles + bar + money + notes + usage + byContent + '</div>';
+  }
+
+  function renderLog(m) {
+    var list = (m.shootLog || []).slice().sort(function (a, b) { return String(a.date) < String(b.date) ? -1 : 1; });
+    var html = '<div class="pc"><div class="pc-head"><h4>' + B(T.logTitle) + '</h4></div><p class="muted" style="font-size:13px;margin:4px 0 10px">' + B(T.logNote) + '</p>';
+    if (!list.length) return html + '<div class="empty">' + B(T.logEmpty) + '</div></div>';
+    return html + '<div class="table-wrap"><table><thead><tr>' + T.logCols.map(function (c) { return '<th>' + B(c) + '</th>'; }).join('') + '</tr></thead><tbody>' + list.map(function (x) {
+      var k = KIND[x.kind], meta = [];
+      if (x.location) meta.push(B([T.logWhere[0] + x.location, T.logWhere[1] + x.location]));
+      if (x.people) meta.push(B([T.logWho[0] + x.people, T.logWho[1] + x.people]));
+      if (x.output) meta.push(B([T.logOut[0] + (Array.isArray(x.output) ? x.output[0] : x.output), T.logOut[1] + (Array.isArray(x.output) ? x.output[1] : x.output)]));
+      return '<tr><td>' + esc(x.date) + '</td><td class="wrap"><b>' + V(x.title) + '</b>' + meta.map(function (t) { return '<span style="display:block;font-size:12px;color:var(--muted)">' + t + '</span>'; }).join('') + '</td>' +
+        '<td>' + (k ? '<span class="st">SHOOT ' + k[0] + '</span><span style="display:block">' + B(k[1]) + '</span>' : esc(x.kind)) + '</td>' +
+        '<td>' + (x.pillar ? '<span class="pill" style="background:' + pillarColor(x.pillar) + '">' + esc(x.pillar) + '</span>' : '') + '</td>' +
+        '<td>' + (FORMAT[x.format] ? B(FORMAT[x.format]) : esc(x.format)) + '</td><td>' + (x.hours != null ? B([x.hours + ' 小時', x.hours + ' 時間']) : '—') + '</td>' +
+        '<td><b>' + (x.points ? uPts({ type: x.points.type, qty: x.points.qty, points: x.points.points }) : '—') + '</b></td><td class="wrap">' + V(x.note) + '</td></tr>';
+    }).join('') + '</tbody></table></div></div>';
   }
 
   function renderPcRules() {
