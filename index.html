@@ -372,13 +372,23 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
     pcBar: [['已使用', '使用済み'], ['已安排', '予定'], ['尚未分配', '未割り当て']],
     pcCarryNote: ['延展上限＝本月購入的 30%（{cap} Points）。上月延展的 {c} Points 會優先使用，月底沒用完直接到期，不能再延展。月底預估以「已安排的工作全部完成」計算。', '繰越の上限は今月購入分の30%（{cap} Points）です。前月からの繰越 {c} Points を優先して使い、月末までに使わなかった分は失効し、再繰越はできません。月末の見込みは「予定の作業がすべて完了した場合」で計算しています。'],
     pcOver: ['已安排＋已使用超過本月可用 {n} Points，請調整安排或增購。', '予定＋使用済みが今月の利用可能分を {n} Points 超えています。予定を調整するか、追加購入してください。'],
+    pcPlan: ['本月方案', '今月のプラン'],
+    pcFee: ['每月合作費', '月額の協力費'],
+    pcPer: ['每點約當', '1ポイントあたり'],
+    pcCustom: ['自訂', 'カスタム'],
+    pcMoney: ['約當金額：已使用 {u} · 已安排 {p} · 尚未分配 {r} · 月底預估到期 {e}', '金額換算：使用済み {u} · 予定 {p} · 未割り当て {r} · 月末の失効見込み {e}'],
+    pcMoneyNote: ['約當金額＝Points × 本月每點約當金額（合作費 ÷ 購入 Points），上月延展的 Points 也用本月單價估算。', '金額換算＝Points × 今月の1ポイントあたり金額（協力費 ÷ 購入Points）。前月からの繰越分も今月の単価で概算しています。'],
+    pcPlans: ['每月 Point 購買方案', '毎月のPoint購入プラン'],
+    pcPlansNote: ['ATHLETA 可依預計工作量，選擇當月需要購入的 Point 額度。', 'ATHLETAは予定している作業量に合わせて、その月に購入するPointの量を選べます。'],
+    pcPlanCols: [['方案', 'プラン'], ['定位', '位置づけ'], ['每月取得 Points', '毎月のPoints'], ['最多可延展', '繰越の上限'], ['每月合作費', '月額の協力費'], ['每點約當', '1ポイントあたり']],
     pcUsage: ['POINT USAGE｜本月點數使用明細', 'POINT USAGE｜今月のポイント使用明細'],
-    pcCols: [['日期', '日付'], ['工作名稱', '作業名'], ['支柱', '柱'], ['工作類型', '作業の種類'], ['數量', '数量'], ['單價', '単価'], ['Points', 'Points'], ['狀態', '状態'], ['備註', '備考']],
+    pcCols: [['日期', '日付'], ['工作名稱', '作業名'], ['支柱', '柱'], ['工作類型', '作業の種類'], ['數量', '数量'], ['單價', '単価'], ['Points', 'Points'], ['約當金額', '金額換算'], ['狀態', '状態'], ['備註', '備考']],
+    pcNoUsage: ['本月尚未登記點數使用明細。', '今月のポイント使用明細はまだ登録されていません。'],
     pcServe: ['服務內容：', '対象コンテンツ：'],
     pcByContent: ['依內容企劃彙總：每個內容花了多少 Points', 'コンテンツ企画別の集計：各コンテンツに使ったPoints'],
     pcContentCols: [['內容企劃', 'コンテンツ企画'], ['支柱', '柱'], ['工作數', '作業数'], ['已安排', '予定'], ['已使用', '使用済み'], ['合計', '合計']],
     pcNoContent: ['（未指定內容）', '（コンテンツ未指定）'],
-    pcRules: ['Point Credit 計算規則', 'Point Creditの計算ルール'],
+    pcRules: ['Point Credit 購買方案與計算規則', 'Point Creditの購入プランと計算ルール'],
     pcRuleCols: [['工作項目', '作業項目'], ['Points', 'Points']],
     pcRuleRows: [
       [['專業攝影', 'プロ撮影'], ['5 Points／1 小時', '1時間 5 Points']],
@@ -389,7 +399,7 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
       [['特殊活動／PR／合作', '特別イベント・PR・コラボ'], ['依內容事前確認', '内容に応じて事前に確認']]
     ],
     pcCarryRules: [
-      ['當月沒用完的 Points，最多可把「本月購入 Points 的 30%」延展到下一個月，超過的部分到期。', '月内に使い切れなかったPointsは、「今月購入分の30%」まで翌月に繰り越せます。超えた分は失効します。'],
+      ['當月沒用完的 Points，最多可把「本月購入 Points 的 30%」（四捨五入）延展到下一個月，超過的部分到期。', '月内に使い切れなかったPointsは、「今月購入分の30%」（四捨五入）まで翌月に繰り越せます。超えた分は失効します。'],
       ['例：購入 100、使用 82、剩 18 → 18 全部延展。購入 100、使用 50、剩 50 → 延展 30，到期 20。', '例：購入100・使用82・残り18 → 18すべて繰越。購入100・使用50・残り50 → 30を繰越、20は失効。'],
       ['下個月使用時，延展的 Points 必須優先使用。', '翌月はまず繰越分のPointsから使います。'],
       ['延展的 Points 到下個月底還沒用完就直接到期，不能再次延展。', '繰越分は翌月末までに使わなければ失効し、再度の繰越はできません。'],
@@ -778,6 +788,19 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
   var TYPE_L = { 'Photography': ['專業攝影', 'プロ撮影'], 'Reel': ['Reel 短影音', 'リール動画'], 'Social Post': ['社群貼文', 'SNS投稿'], 'Content Staff': ['Content Staff', 'Content Staff'], 'Article': ['品牌／人物文章', 'ブランド・人物記事'], 'Campaign': ['特殊活動／PR／合作', '特別イベント・PR・コラボ'], 'Other': ['其他', 'その他'] };
   var UNIT = { 'Photography': ['小時', '時間'], 'Reel': ['支', '本'], 'Social Post': ['則', '本'], 'Content Staff': ['小時', '時間'], 'Article': ['篇', '本'], 'Campaign': ['項', '件'], 'Other': ['項', '件'] };
   var STATUS_L = { 'PLANNED': ['預計執行', '実施予定'], 'SCHEDULED': ['已排程', '日程確定'], 'IN PROGRESS': ['執行中', '進行中'], 'COMPLETED': ['已完成', '完了'], 'CANCELLED': ['取消', 'キャンセル'] };
+  var PLANS = [
+    { pts: 50, name: ['入門合作', '入門プラン'], fee: 44000 },
+    { pts: 75, name: ['穩定合作', '安定プラン'], fee: 52000 },
+    { pts: 100, name: ['標準合作', '標準プラン'], fee: 60000 },
+    { pts: 125, name: ['深度合作', '深度プラン'], fee: 68000 }
+  ];
+  function planFor(m) {
+    var P = (m.points && Number(m.points.purchased)) || 0;
+    var plan = PLANS.filter(function (x) { return x.pts === P; })[0];
+    var fee = m.points && typeof m.points.fee === 'number' ? m.points.fee : plan ? plan.fee : null;
+    return { plan: plan, fee: fee, per: fee != null && P ? fee / P : null };
+  }
+  function nt(n) { return 'NT$' + Math.round(n).toLocaleString('en-US'); }
   function uRate(u) { return typeof u.rate === 'number' ? u.rate : RATE[u.type]; }
   // explicit `points` wins (Campaign / Other / Article above the base rate), else qty × rate
   function uPts(u) { if (typeof u.points === 'number') return u.points; var r = uRate(u); return r == null ? 0 : r * (Number(u.qty) || 0); }
@@ -793,7 +816,7 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
       });
       // projection assumes planned work gets done; carry-over is spent first
       var proj = used + planned, fromC = Math.min(proj, C), fromP = Math.min(P, proj - fromC);
-      var pLeft = P - fromP, cap = Math.floor(P * 0.3), out = Math.min(pLeft, cap);
+      var pLeft = P - fromP, cap = Math.round(P * 0.3), out = Math.min(pLeft, cap);
       res[m.month] = { P: P, C: C, A: A, used: used, planned: planned, remaining: A - used, unalloc: A - used - planned, cap: cap, carryOut: out, expiring: (C - fromC) + (pLeft - out), over: Math.max(0, proj - A) };
       carry = out;
     });
@@ -809,6 +832,11 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
     var r = PTS[m.month];
     var head = '<div class="pc"><div class="pc-head"><h4>' + B(T.pcTitle) + '</h4></div><p class="muted" style="font-size:13px;margin:4px 0 0">' + B(T.pcRole) + '</p>';
     if (!hasPoints(m) && !r.C) return head + '<div class="empty" style="margin-top:12px">' + B(T.pcEmpty) + '</div></div>';
+    var pf = planFor(m);
+    var planTiles = '<div class="tiles">' +
+      '<div class="tile"><small>PLAN</small><span class="lbl">' + B(T.pcPlan) + '</span><b>' + (pf.plan ? r.P + ' Points' : r.P ? r.P + ' Points' : '—') + '</b>' + (pf.plan ? '<span class="lbl">' + B(pf.plan.name) + '</span>' : r.P ? '<span class="lbl">' + B(T.pcCustom) + '</span>' : '') + '</div>' +
+      '<div class="tile"><small>MONTHLY FEE</small><span class="lbl">' + B(T.pcFee) + '</span><b>' + (pf.fee != null ? nt(pf.fee) : '—') + '</b></div>' +
+      '<div class="tile"><small>PER POINT</small><span class="lbl">' + B(T.pcPer) + '</span><b>' + (pf.per != null ? nt(pf.per) : '—') + '</b></div></div>';
     var vals = [r.P, r.C, r.A, r.planned, r.used, r.remaining, r.unalloc, r.carryOut, r.expiring];
     var tiles = '<div class="tiles">' + T.pcTiles.map(function (t, i) {
       var cls = (i === 2 || i === 5) ? ' key' : (i === 6 && r.unalloc < 0) || (i === 8 && r.expiring > 0) ? ' warn' : '';
@@ -821,13 +849,13 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
       (r.over ? '<p class="notice" style="border-color:var(--danger);color:var(--danger)">' + B(fill(T.pcOver, { n: r.over })) + '</p>' : '');
 
     var list = (m.usage || []).slice().sort(function (a, b) { return String(a.date) < String(b.date) ? -1 : 1; });
-    var usage = '<h4 style="margin:20px 0 8px;font-size:15px;color:var(--accent)">' + B(T.pcUsage) + '</h4>' + (!list.length ? '<div class="empty">' + B(T.pcEmpty) + '</div>' :
+    var usage = '<h4 style="margin:20px 0 8px;font-size:15px;color:var(--accent)">' + B(T.pcUsage) + '</h4>' + (!list.length ? '<div class="empty">' + B(T.pcNoUsage) + '</div>' :
       '<div class="table-wrap"><table><thead><tr>' + T.pcCols.map(function (c) { return '<th>' + B(c) + '</th>'; }).join('') + '</tr></thead><tbody>' + list.map(function (u) {
         var unit = UNIT[u.type] || ['', ''], rate = uRate(u);
         return '<tr class="' + (u.status === 'CANCELLED' ? 'cancel' : '') + '"><td>' + esc(u.date) + '</td><td class="wrap">' + V(u.task) + (u.content ? '<span class="meta" style="display:block;font-size:12px;color:var(--muted)">' + B([T.pcServe[0] + (Array.isArray(u.content) ? u.content[0] : u.content), T.pcServe[1] + (Array.isArray(u.content) ? u.content[1] : u.content)]) + '</span>' : '') + '</td>' +
           '<td>' + (u.pillar ? '<span class="pill" style="background:' + pillarColor(u.pillar) + '">' + esc(u.pillar) + '</span>' : '') + '</td>' +
           '<td>' + esc(u.type) + (TYPE_L[u.type] ? '<span style="display:block">' + B(TYPE_L[u.type]) + '</span>' : '') + '</td>' +
-          '<td>' + (u.qty != null ? B([u.qty + ' ' + unit[0], u.qty + ' ' + unit[1]]) : '—') + '</td><td>' + (typeof u.points === 'number' && rate == null ? '—' : rate) + '</td><td><b>' + uPts(u) + '</b></td>' +
+          '<td>' + (u.qty != null ? B([u.qty + ' ' + unit[0], u.qty + ' ' + unit[1]]) : '—') + '</td><td>' + (typeof u.points === 'number' && rate == null ? '—' : rate) + '</td><td><b>' + uPts(u) + '</b></td><td>' + (pf.per != null ? nt(uPts(u) * pf.per) : '—') + '</td>' +
           '<td><span class="st ' + esc(String(u.status).replace(' ', '')) + '">' + esc(u.status) + '</span>' + (STATUS_L[u.status] ? '<span style="display:block;font-size:12px">' + B(STATUS_L[u.status]) + '</span>' : '') + '</td><td class="wrap">' + V(u.note) + '</td></tr>';
       }).join('') + '</tbody></table></div>');
 
@@ -842,11 +870,15 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
     var byContent = !order.length ? '' : '<h4 style="margin:20px 0 8px;font-size:15px;color:var(--accent)">' + B(T.pcByContent) + '</h4><div class="table-wrap"><table><thead><tr>' + T.pcContentCols.map(function (c) { return '<th>' + B(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
       order.map(function (k) { var g = groups[k]; return '<tr><td class="wrap">' + (g.content ? V(g.content) : B(T.pcNoContent)) + '</td><td>' + (g.pillar ? '<span class="pill" style="background:' + pillarColor(g.pillar) + '">' + esc(g.pillar) + '</span>' : '') + '</td><td>' + g.n + '</td><td>' + g.planned + '</td><td>' + g.used + '</td><td><b>' + (g.planned + g.used) + '</b></td></tr>'; }).join('') + '</tbody></table></div>';
 
-    return head + tiles + bar + notes + usage + byContent + '</div>';
+    var money = pf.per == null ? '' : '<p style="font-size:13px;margin:10px 0 0">' + B(fill(T.pcMoney, { u: nt(r.used * pf.per), p: nt(r.planned * pf.per), r: nt(Math.max(0, r.unalloc) * pf.per), e: nt(r.expiring * pf.per) })) + '</p><p class="muted" style="font-size:12px;margin:2px 0 0">' + B(T.pcMoneyNote) + '</p>';
+    return head + planTiles + tiles + bar + money + notes + usage + byContent + '</div>';
   }
 
   function renderPcRules() {
     set('pc-rules', '<summary>' + B(T.pcRules) + '</summary><div class="card" style="margin-top:10px">' +
+      '<h4 style="margin:0 0 4px;font-size:15px;color:var(--accent)">' + B(T.pcPlans) + '</h4><p class="muted" style="font-size:13px;margin:0 0 8px">' + B(T.pcPlansNote) + '</p>' +
+      '<div class="table-wrap" style="margin-bottom:18px"><table><thead><tr>' + T.pcPlanCols.map(function (c) { return '<th>' + B(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      PLANS.map(function (x) { return '<tr><td>' + x.pts + ' Points</td><td>' + B(x.name) + '</td><td>' + x.pts + '</td><td>' + Math.round(x.pts * 0.3) + ' Points</td><td>' + nt(x.fee) + '</td><td>' + nt(x.fee / x.pts) + '</td></tr>'; }).join('') + '</tbody></table></div>' +
       '<div class="table-wrap"><table><thead><tr>' + T.pcRuleCols.map(function (c) { return '<th>' + B(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
       T.pcRuleRows.map(function (r) { return '<tr><td>' + B(r[0]) + '</td><td>' + B(r[1]) + '</td></tr>'; }).join('') + '</tbody></table></div>' +
       '<ul style="margin:12px 0 0;padding-left:20px;font-size:14px">' + T.pcCarryRules.map(function (x) { return '<li style="margin:6px 0">' + B(x) + '</li>'; }).join('') + '</ul></div>');

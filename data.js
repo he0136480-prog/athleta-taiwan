@@ -1,14 +1,14 @@
 // ATHLETA Taiwan 團隊資料（由小封更新）
 // 文字欄位可以是 '中文'，或 ['中文', '日本語'] 讓網站顯示雙語。
 window.ATHLETA_DATA = {
-  updated: '2026-10-08',
+  updated: '2026-10-10',
 
   // 每月進度：
   // { month: 'YYYY-MM', draft: 草案就填 true, theme: 本月主題,
   //   groups: [ { name: 分組名稱, tasks: [ { t: 待辦事項, done: true/false, owner: '負責人', due: 'MM/DD' } ] } ],
   //   shoots: [ { pillar: PRODUCT|PEOPLE|FOOTBALL|CULTURE, title: 拍攝內容, person: '人物', date: 'MM/DD', status: 待拍攝|已拍攝|已發布 } ] }
   //   ※ shoots 是本月內容清單；status 為「已發布」的項目會算進「實際比例」（同一則內容發多平台只列一次）。
-  //   points: { purchased: 本月購入 Points }   ← 上月延展會自動計算
+  //   points: { purchased: 本月購入 Points（50／75／100／125 會自動帶入方案與合作費；其他數量可加 fee: 金額） }   ← 上月延展會自動計算
   //   usage: [ { date: 'MM/DD', task: 工作名稱, content: 服務的內容企劃, pillar: PRODUCT|PEOPLE|FOOTBALL|CULTURE,
   //              type: Photography|Reel|Social Post|Content Staff|Article|Campaign|Other, qty: 數量,
   //              points: 只有 Campaign／Other／特別報價時才填, status: PLANNED|SCHEDULED|IN PROGRESS|COMPLETED|CANCELLED, note: 備註 } ]
@@ -37,7 +37,9 @@ window.ATHLETA_DATA = {
           { t: ['製作並發布歷史系列（IG 輪播＋FB 長文＋Threads 短文）', '歴史シリーズを制作・公開（IGカルーセル＋FB長文＋Threads短文）'], done: false }
         ] }
       ],
-      shoots: []
+      shoots: [],
+      points: { purchased: 50 },
+      usage: []
     },
     {
       month: '2026-11', draft: true,
