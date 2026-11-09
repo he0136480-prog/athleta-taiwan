@@ -381,6 +381,9 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
     pcPlans: ['每月 Point 購買方案', '毎月のPoint購入プラン'],
     pcPlansNote: ['ATHLETA 可依預計工作量，選擇當月需要購入的 Point 額度。', 'ATHLETAは予定している作業量に合わせて、その月に購入するPointの量を選べます。'],
     pcPlanCols: [['方案', 'プラン'], ['定位', '位置づけ'], ['每月取得 Points', '毎月のPoints'], ['最多可延展', '繰越の上限'], ['每月合作費', '月額の協力費'], ['每點約當', '1ポイントあたり']],
+    pcSplit: ['POINT SPLIT｜執行人員點數比例', 'POINT SPLIT｜担当者ごとのポイント比率'],
+    pcSplitNote: ['本月 Points 由誰執行、各佔多少比例。', '今月のPointsを誰が担当し、それぞれどのくらいの割合か。'],
+    pcSplitOff: ['注意：人員點數合計 {s}，與本月可用 {a} 不同。', '注意：担当者のポイント合計 {s} が、今月の利用可能 {a} と一致しません。'],
     pcUsage: ['POINT USAGE｜本月點數使用明細', 'POINT USAGE｜今月のポイント使用明細'],
     pcCols: [['日期', '日付'], ['工作名稱', '作業名'], ['支柱', '柱'], ['工作類型', '作業の種類'], ['數量', '数量'], ['單價', '単価'], ['Points', 'Points'], ['約當金額', '金額換算'], ['狀態', '状態'], ['備註', '備考']],
     logTitle: ['SHOOT LOG｜本月拍攝紀錄', 'SHOOT LOG｜今月の撮影記録'],
@@ -860,6 +863,11 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
     var A = Math.max(r.A, r.used + r.planned) || 1;
     var bar = '<div class="pbar"><i style="width:' + (r.used / A * 100) + '%;background:var(--c-football)"></i><i style="width:' + (r.planned / A * 100) + '%;background:var(--accent)"></i></div>' +
       '<div class="plegend">' + T.pcBar.map(function (l, i) { return '<span><i style="background:' + ['var(--c-football)', 'var(--accent)', 'var(--line)'][i] + '"></i>' + esc(textFor(l)) + ' ' + [r.used, r.planned, Math.max(0, r.unalloc)][i] + '</span>'; }).join('') + '</div>';
+    var sp = (m.points && m.points.split) || [], spSum = sp.reduce(function (t, x) { return t + (Number(x.points) || 0); }, 0), spC = ['var(--c-culture)', 'var(--c-people)', 'var(--c-product)', 'var(--c-football)'];
+    var split = !sp.length || !spSum ? '' : '<h4 style="margin:20px 0 4px;font-size:15px;color:var(--accent)">' + B(T.pcSplit) + '</h4><p class="muted" style="font-size:13px;margin:0 0 6px">' + B(T.pcSplitNote) + '</p>' +
+      '<div class="pbar" style="height:16px">' + sp.map(function (x, i) { return '<i style="width:' + (x.points / spSum * 100) + '%;background:' + spC[i % spC.length] + '"></i>'; }).join('') + '</div>' +
+      '<div class="plegend" style="font-size:14px;color:var(--ink,inherit)">' + sp.map(function (x, i) { return '<span><i style="background:' + spC[i % spC.length] + '"></i><b>' + V(x.who) + '</b> ' + x.points + ' Points（' + Math.round(x.points / spSum * 100) + '%）</span>'; }).join('') + '</div>' +
+      (spSum !== r.A ? '<p class="muted" style="font-size:12px;margin:4px 0 0">' + B(fill(T.pcSplitOff, { s: spSum, a: r.A })) + '</p>' : '');
     var notes = '<p class="muted" style="font-size:13px;margin:10px 0 0">' + B(fill(T.pcCarryNote, { cap: r.cap, c: r.C })) + '</p>' +
       (r.over ? '<p class="notice" style="border-color:var(--danger);color:var(--danger)">' + B(fill(T.pcOver, { n: r.over })) + '</p>' : '');
 
@@ -886,7 +894,7 @@ footer{margin-top:80px;padding:32px 16px;text-align:center;color:var(--muted);fo
       order.map(function (k) { var g = groups[k]; return '<tr><td class="wrap">' + (g.content ? V(g.content) : B(T.pcNoContent)) + '</td><td>' + (g.pillar ? '<span class="pill" style="background:' + pillarColor(g.pillar) + '">' + esc(g.pillar) + '</span>' : '') + '</td><td>' + g.n + '</td><td>' + g.planned + '</td><td>' + g.used + '</td><td><b>' + (g.planned + g.used) + '</b></td></tr>'; }).join('') + '</tbody></table></div>';
 
     var money = pf.per == null ? '' : '<p style="font-size:13px;margin:10px 0 0">' + B(fill(T.pcMoney, { u: nt(r.used * pf.per), p: nt(r.planned * pf.per), r: nt(Math.max(0, r.unalloc) * pf.per), e: nt(r.expiring * pf.per) })) + '</p><p class="muted" style="font-size:12px;margin:2px 0 0">' + B(T.pcMoneyNote) + '</p>';
-    return head + planTiles + tiles + bar + money + notes + usage + byContent + '</div>';
+    return head + planTiles + tiles + bar + money + notes + split + usage + byContent + '</div>';
   }
 
   function renderLog(m) {

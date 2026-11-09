@@ -8,7 +8,7 @@ window.ATHLETA_DATA = {
   //   groups: [ { name: 分組名稱, tasks: [ { t: 待辦事項, done: true/false, owner: '負責人', due: 'MM/DD' } ] } ],
   //   shoots: [ { pillar: PRODUCT|PEOPLE|FOOTBALL|CULTURE, title: 拍攝內容, person: '人物', date: 'MM/DD', status: 待拍攝|已拍攝|已發布 } ] }
   //   ※ shoots 是本月內容清單；status 為「已發布」的項目會算進「實際比例」（同一則內容發多平台只列一次）。
-  //   points: { purchased: 本月購入 Points（50／75／100／125 會自動帶入方案與合作費；其他數量可加 fee: 金額） }   ← 上月延展會自動計算
+  //   points: { purchased: 本月購入 Points（50／75／100／125 會自動帶入方案與合作費；其他數量可加 fee: 金額）, split: [ { who: '執行人員', points: 點數 } ] ← 人員點數比例（只放點數，不放分潤金額） }   ← 上月延展會自動計算
   //   usage: [ { date: 'MM/DD', task: 工作名稱, content: 服務的內容企劃, pillar: PRODUCT|PEOPLE|FOOTBALL|CULTURE,
   //              type: Photography|Reel|Social Post|Content Staff|Article|Campaign|Other, qty: 數量,
   //              points: 只有 Campaign／Other／特別報價時才填, status: PLANNED|SCHEDULED|IN PROGRESS|COMPLETED|CANCELLED, note: 備註 } ]
@@ -41,7 +41,7 @@ window.ATHLETA_DATA = {
         ] }
       ],
       shoots: [],
-      points: { purchased: 50 },
+      points: { purchased: 50, split: [ { who: ['封', '封'], points: 26 }, { who: ['彭', '彭'], points: 24 } ] },
       usage: [
         { date: '10月', task: ['駐店（4 + 4 + 4 小時）', '店舗常駐（4 + 4 + 4 時間）'],
           content: ['門市店員協助', '店舗スタッフのサポート'],
