@@ -1,7 +1,7 @@
 // ATHLETA Taiwan 團隊資料（由小封更新）
 // 文字欄位可以是 '中文'，或 ['中文', '日本語'] 讓網站顯示雙語。
 window.ATHLETA_DATA = {
-  updated: '2026-10-26',
+  updated: '2026-11-09',
 
   // 每月進度：
   // { month: 'YYYY-MM', draft: 草案就填 true, theme: 本月主題,
@@ -43,9 +43,14 @@ window.ATHLETA_DATA = {
       shoots: [],
       points: { purchased: 50 },
       usage: [
-        { date: '10/13', task: ['門市店員協助（2 人 × 4 小時）', '店舗スタッフのサポート（2名 × 4時間）'],
+        { date: '10月', task: ['駐店（4 + 4 + 4 小時）', '店舗常駐（4 + 4 + 4 時間）'],
           content: ['門市店員協助', '店舗スタッフのサポート'],
-          type: 'Content Staff', qty: 8, status: 'COMPLETED', note: ['無拍攝', '撮影なし'] }
+          type: 'Content Staff', qty: 12, status: 'COMPLETED', note: ['無拍攝', '撮影なし'] },
+        { date: '10月', task: ['IG 貼文 × 4', 'IG投稿 × 4'],
+          type: 'Social Post', qty: 4, status: 'COMPLETED' },
+        { date: '11/10', task: ['商品拍攝 Reel', '商品撮影リール'],
+          content: ['商品拍攝', '商品撮影'], pillar: 'PRODUCT',
+          type: 'Reel', qty: 1, status: 'SCHEDULED', note: ['預計 11/10 執行，計入 10 月點數', '11/10 実施予定、10月分のポイントで計上'] }
       ],
       shootLog: [
         { date: '10/11', title: ['日本沖繩 ATHLETA 巴西學院來台比賽', '沖縄 ATHLETAブラジルアカデミー 来台試合'],
@@ -54,10 +59,6 @@ window.ATHLETA_DATA = {
           output: ['照片約 50 張', '写真 約50枚'],
           note: ['可延伸作為品牌歷史內容素材（巴西 → 日本 → 台灣）', 'ブランドの歴史コンテンツ（ブラジル → 日本 → 台湾）の素材としても使える'],
           points: { type: 'Photography', qty: 2, status: 'COMPLETED' } },
-        { date: '10/20', title: ['蔡宇翔 x ATHLETA', '蔡宇翔 x ATHLETA'],
-          kind: 'PEOPLE', pillar: 'PEOPLE', format: 'PHOTO', hours: 1,
-          people: '蔡宇翔（球員）',
-          points: { type: 'Photography', qty: 1, status: 'COMPLETED' } },
         { date: '10/25', title: ['台中德比 磐石 vs 未來', '台中ダービー 磐石 vs 未來'],
           kind: 'EVENT', pillar: 'FOOTBALL', format: 'PHOTO', hours: 2,
           location: '西屯球場', people: '磐石 vs 未來',
@@ -80,7 +81,14 @@ window.ATHLETA_DATA = {
           { t: ['企劃 12–1 月的固定系列', '12〜1月の定番シリーズを企画する'], done: false }
         ] }
       ],
-      shoots: []
+      shoots: [],
+      shootLog: [
+        { date: '10/20', title: ['蔡宇翔 x ATHLETA', '蔡宇翔 x ATHLETA'],
+          kind: 'PEOPLE', pillar: 'PEOPLE', format: 'PHOTO', hours: 1,
+          people: '蔡宇翔（球員）',
+          note: ['10/20 拍攝，點數計入 11 月', '10/20 撮影、ポイントは11月分で計上'],
+          points: { type: 'Photography', qty: 1, status: 'COMPLETED' } }
+      ]
     },
     {
       month: '2026-12', draft: true,
